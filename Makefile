@@ -1,5 +1,5 @@
 #OBJS specifies which files to compile as part of the project 
-OBJS = Terminal_Meulation_Base.cpp
+OBJS = Terminal_Emulation_Base.cpp
 #CC specifies which compiler we're using 
 CC = g++ 
 #COMPILER_FLAGS specifies the additional compilation options we're using 
