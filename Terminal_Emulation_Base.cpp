@@ -8,7 +8,6 @@
 #include <thread>
 #include <chrono>
 #include <SFML/Graphics.hpp>
-#include "ACSIIart.hpp"
 
 sf::RenderWindow window;
 sf::Event event;
@@ -18,6 +17,19 @@ sf::Text cursor;
 bool isWhite = false;
 bool thread_running = false;
 std::string fontfile = "hachicro.ttf" ;
+std::vector<std::string> history;
+std::vector<std::string>::iterator it = history.begin();
+
+bool clean_insert(std::string in){
+    if(!(std::find(history.begin(), history.end(), in) != history.end())){
+        history.push_back(in);
+        it = history.end();
+        return true;
+    }
+    else{
+        return false;
+    }
+}
 
 void blinkCursor(){
     while(thread_running){
@@ -413,7 +425,35 @@ int main(){
                     cursor.setPosition(text.getGlobalBounds().width, pos2.y);
                 }
                 if(sf::Keyboard::isKeyPressed(sf::Keyboard::Return)){
+                    clean_insert(textstream.str());
+                    //Enter intense Return Magic Here!
                     textstream.str(std::string());
+                    cursor.setPosition(text.getGlobalBounds().width, pos2.y);
+                }
+                if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){
+                    //Enter intense Return Magic Here! Try to save curr textstream in vec without adding addi. stuff using multiple ups
+                    if(!(history.empty()) && it != history.begin()){
+                        if(clean_insert(textstream.str())){
+                            it = it - 2;
+                        }
+                        else{
+                            it--;
+                        }
+                        textstream.str(std::string());
+                        textstream.str(*it);
+                    }
+                    cursor.setPosition(text.getGlobalBounds().width, pos2.y);
+                }
+                if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){
+                    //Enter intense Return Magic Here! Try to save curr textstream in vec without adding addi. stuff using multiple ups
+                    if(!(history.empty()) && it++ != (history.end() - 1)){
+
+                        textstream.str(std::string());
+                        textstream.str(*it);
+                    }
+                    else if(!(history.empty()) && it == history.end()){
+                        it--;
+                    }
                     cursor.setPosition(text.getGlobalBounds().width, pos2.y);
                 }
             }
@@ -426,7 +466,6 @@ int main(){
         window.draw(cursor);
         window.display();
     }
-
     return 0;
 }
 
