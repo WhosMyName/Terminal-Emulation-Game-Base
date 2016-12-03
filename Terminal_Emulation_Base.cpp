@@ -19,6 +19,9 @@ bool thread_running = false;
 std::string fontfile = "hachicro.ttf" ;
 std::vector<std::string> history;
 std::vector<std::string>::iterator it = history.begin();
+std::stringstream textstream;
+
+
 
 bool clean_insert(std::string in){
     if(!(std::find(history.begin(), history.end(), in) != history.end())){
@@ -43,6 +46,19 @@ void blinkCursor(){
             cursor.setColor(sf::Color::White);
             std::this_thread::sleep_for(std::chrono::milliseconds(250)); 
         }
+    }
+}
+
+void switch_context(std::string in){
+    std::cout << in << std::endl;
+    if(in == ""){
+
+    }
+    else if(in == ""){
+
+    }
+    else{
+
     }
 }
 
@@ -74,7 +90,6 @@ int main(){
     }
     thread_running = true;
     std::thread thread(blinkCursor);// Creates Thread (C++11) and calls treadnochill
-    std::stringstream textstream;
     while (window.isOpen()){    // run the program as long as the window is open
         // check all the window's events that were triggered since the last iteration of the loop
         sf::Vector2f pos = text.getPosition();
@@ -426,12 +441,30 @@ int main(){
                 }
                 if(sf::Keyboard::isKeyPressed(sf::Keyboard::Return)){
                     clean_insert(textstream.str());
-                    //Enter intense Return Magic Here!
                     textstream.str(std::string());
                     cursor.setPosition(text.getGlobalBounds().width, pos2.y);
+                    if((*(it-1)) == "exit"){
+                        textstream.str(std::string());
+                        textstream << "Have Fun!";
+                        thread_running = false;
+                        cursor.setColor(sf::Color::Black);
+                        window.clear(sf::Color::Black); // clear the window with black color
+                        text.setString(textstream.str());
+                        cursor.setPosition(text.getLocalBounds().width, pos2.y);
+                        window.draw(text);
+                        window.draw(cursor);
+                        window.display();
+                        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+                        thread.join();
+                        window.clear(sf::Color::Black);
+                        window.close(); // "close requested" event: we close the window
+                        return 0;
+                    }
+                    else{
+                    switch_context((*(it-1)));
+                    }
                 }
                 if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){
-                    //Enter intense Return Magic Here! Try to save curr textstream in vec without adding addi. stuff using multiple ups
                     if(!(history.empty()) && it != history.begin()){
                         if(clean_insert(textstream.str())){
                             it = it - 2;
@@ -445,7 +478,6 @@ int main(){
                     cursor.setPosition(text.getGlobalBounds().width, pos2.y);
                 }
                 if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){
-                    //Enter intense Return Magic Here! Try to save curr textstream in vec without adding addi. stuff using multiple ups
                     if(!(history.empty()) && it++ != (history.end() - 1)){
 
                         textstream.str(std::string());
@@ -461,13 +493,9 @@ int main(){
         cursor.setPosition(text.getLocalBounds().width, pos2.y);
         window.clear(sf::Color::Black); // clear the window with black color
         text.setString(textstream.str());
-
         window.draw(text);
         window.draw(cursor);
         window.display();
     }
     return 0;
 }
-
-
-
