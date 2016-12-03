@@ -8,6 +8,7 @@
 #include <thread>
 #include <chrono>
 #include <SFML/Graphics.hpp>
+#include "hub.hpp" 
 
 sf::RenderWindow window;
 sf::Event event;
