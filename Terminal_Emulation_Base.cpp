@@ -22,10 +22,8 @@ std::vector<std::string> history;
 std::vector<std::string>::iterator it = history.begin();
 std::stringstream textstream;
 
-
-
 bool clean_insert(std::string in){
-    if(!(std::find(history.begin(), history.end(), in) != history.end())){
+    if(!(std::find(history.begin(), history.end(), in) != history.end()) && !in.empty()){
         history.push_back(in);
         it = history.end();
         return true;
@@ -444,25 +442,27 @@ int main(){
                     clean_insert(textstream.str());
                     textstream.str(std::string());
                     cursor.setPosition(text.getGlobalBounds().width, pos2.y);
-                    if((*(it-1)) == "exit"){
-                        textstream.str(std::string());
-                        textstream << "Have Fun!";
-                        thread_running = false;
-                        cursor.setColor(sf::Color::Black);
-                        window.clear(sf::Color::Black); // clear the window with black color
-                        text.setString(textstream.str());
-                        cursor.setPosition(text.getLocalBounds().width, pos2.y);
-                        window.draw(text);
-                        window.draw(cursor);
-                        window.display();
-                        std::this_thread::sleep_for(std::chrono::milliseconds(500));
-                        thread.join();
-                        window.clear(sf::Color::Black);
-                        window.close(); // "close requested" event: we close the window
-                        return 0;
-                    }
-                    else{
-                    switch_context((*(it-1)));
+                    if(!history.empty()){
+                        if((*(it-1)) == "exit"){
+                            textstream.str(std::string());
+                            textstream << "Have Fun!";
+                            thread_running = false;
+                            cursor.setColor(sf::Color::Black);
+                            window.clear(sf::Color::Black); // clear the window with black color
+                            text.setString(textstream.str());
+                            cursor.setPosition(text.getLocalBounds().width, pos2.y);
+                            window.draw(text);
+                            window.draw(cursor);
+                            window.display();
+                            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+                            thread.join();
+                            window.clear(sf::Color::Black);
+                            window.close(); // "close requested" event: we close the window
+                            return 0;
+                        }
+                        else{
+                        switch_context((*(it-1)));
+                        }
                     }
                 }
                 if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){
